@@ -4,21 +4,21 @@ import time
 
 
 class NewtonSolver(solver.Solver):
-    def solve(self, f, jacobian_f):
+    def solve(self, grad_f, hessian_f):
         xk = self.x0
         k = 0
 
-        f_norm = np.linalg.norm(f(xk))
+        grad_f_norm = np.linalg.norm(grad_f(xk))
 
         xs = [xk]
 
         start_time = time.time()
 
-        while (f_norm > self.tol) and (k < self.maxIts):
-            xkp1 = xk - np.linalg.solve(jacobian_f(xk), f(xk))
+        while (grad_f_norm > self.tol) and (k < self.maxIts):
+            xkp1 = xk - np.linalg.solve(hessian_f(xk), grad_f(xk))
             xk = xkp1
             xs.append(xk)
-            f_norm = np.linalg.norm(f(xk))
+            grad_f_norm = np.linalg.norm(grad_f(xk))
             xs.append(xk)
             k += 1
 

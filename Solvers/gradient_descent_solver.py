@@ -4,20 +4,20 @@ import time
 
 
 class GradientDescentSolver(solver.Solver):
-    def solve(self, f, jacobian_f, gamma):
+    def solve(self, grad_f, hessian_f, gamma):
         xk = self.x0
         k = 0
 
-        f_norm = np.linalg.norm(f(xk))
+        grad_f_norm = np.linalg.norm(grad_f(xk))
 
         xs = [xk]
 
         start_time = time.time()
 
-        while (f_norm > self.tol) and (k < self.maxIts):
-            xkp1 = xk - gamma * jacobian_f(xk).transpose() * f(xk)
+        while (grad_f_norm > self.tol) and (k < self.maxIts):
+            xkp1 = xk - gamma * (hessian_f(xk).transpose() @ grad_f(xk))
             xk = xkp1
-            f_norm = np.linalg.norm(f(xk))
+            grad_f_norm = np.linalg.norm(grad_f(xk))
             k += 1
             xs.append(xk)
 

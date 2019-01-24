@@ -15,6 +15,7 @@ class BFGSSolver(solver.Solver):
         start_time = time.time()
 
         while grad_norm > self.tol:
+            grad_fk = grad_f(xk)
             pk = - hessian_k @ grad_fk
 
             ak = self.backtracking_line_search(f, grad_fk, pk, xk)
@@ -32,16 +33,23 @@ class BFGSSolver(solver.Solver):
             if k == 0:
                 hessian_k = np.inner(yk, sk) / np.inner(yk, yk) * np.eye(n)
 
-            # BFGS update is performed
-            try:
+            potential_error = (np.dot(yk.transpose(), sk))
+
+            if potential_error > 1e5:
+                rho_k = 1000.0
+            else:
                 rho_k = 1.0 / (np.dot(yk.transpose(), sk))
 
-                if rho_k > 1e10:
-                    raise ValueError
-            except ZeroDivisionError:
-                rho_k = 1000.0
-            except ValueError:
-                rho_k = 1000.0
+
+            #try:
+                #rho_k = 1.0 / (np.dot(yk.transpose(), sk))
+
+                #if rho_k > 1e10:
+                    #raise ValueError
+            #except ZeroDivisionError:
+               # rho_k = 1000.0
+           # except ValueError:
+                #rho_k = 1000.0
 
             hessian_k = self.bfgs_update(hessian_k, rho_k, sk, yk, n)
 
@@ -51,6 +59,7 @@ class BFGSSolver(solver.Solver):
             xs.append(xk)
             grad_fk = grad_fkp1
             grad_norm = np.linalg.norm(grad_fk)
+            k += 1
 
         # We return the approximated root, the time taken to find it, and the number of
         # iterations taken to find it

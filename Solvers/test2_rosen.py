@@ -1,32 +1,35 @@
-import my_bfgs
+from Solvers import solver
+from Solvers import comparisons
 import numpy as np
-from scipy.optimize import rosen, rosen_der
-import matplotlib.pyplot as plt
+from scipy.optimize import rosen, rosen_der, rosen_hess
 
 """
 Test 2 :    Rosenbrock Function (n = 3)
             Global Minimum is [1, 1, 1]
 
             f(x)  = rosen(x)
-            f'(x) = rosen_der(x)
+            grad_f(x) = rosen_der(x)
+            hess_f(x) = rosen_hes(x)
 """
 
 
-def f(x):
+def rosenbrock_f(x):
     return rosen(x)
 
 
-def fp(x):
-    return rosen_der(x).reshape(3, 1)
+def rosenbrock_grad_f(x):
+    return rosen_der(x).T
 
-n = 3
-root = np.array([1, 1, 1]).reshape(3, 1)
 
-x0 = np.array([2, 2, 2]).reshape(3, 1)
+def rosenbrock_hess_f(x):
+    return rosen_hess(x)
 
+
+x0 = np.array([3, 3, 3]).T
 tol = 1e-6
 max_its = 1000
 
-my_bfgs.bfgs(x0, f, fp, tol, max_its, root)
+solver = solver.Solver(x0, max_its, tol)
+comparisons.compare(solver, rosenbrock_f, rosenbrock_grad_f, rosenbrock_hess_f)
 
-my_bfgs.bfgs(x0, f, fp, tol, max_its, root, plot=True, plt_range=[-3, 3, -3, 3])
+root = np.array([1, 1, 1]).T

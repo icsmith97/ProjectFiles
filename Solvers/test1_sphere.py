@@ -1,29 +1,34 @@
-import my_bfgs
+from Solvers import solver
+from Solvers import comparisons
 import numpy as np
 
 """
-Test 1 :    Simple Function (Sphere Function for n = 4)
-            Global Minimum is [0, 0, 0, 0]
+Test 1 :    Simple Function (Sphere Function for n = 3)
+            Global Minimum is [0, 0, 0]
 
-            f(x)  = x[0]^2 + x[1]^2 + x[2]^2 + x[3]^2
-            f'(x) = [2*x[0], 2*x[1], 2*x[2], 2*x[3]]
+            f(x)  = x[0]^2 + x[1]^2 + x[2]^2
+            f'(x) = [2*x[0], 2*x[1], 2*x[2]]
 """
 
 
-def f(x):
-    return x[0] ** 2 + x[1] ** 2 + x[2] ** 2 + x[3] ** 2
+def sphere(x):
+    return x[0] ** 2 + x[1] ** 2 + x[2] ** 2
 
 
-def fp(x):
-    return np.array([2 * x[0], 2 * x[1], 2 * x[2], 3 * x[3]]).reshape(4, 1)
+def sphere_grad(x):
+    return np.array([2 * x[0], 2 * x[1], 2 * x[2]]).T
 
 
-n = 4
-root = np.array([0, 0, 0, 0]).reshape(4, 1)
+def sphere_hessian(x):
+    return np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 
-x0 = np.array([43, 12, 105, -32]).reshape(4, 1)
 
-tol = 1e-8
+x0 = np.array([43, 12, 105]).T
 max_its = 1000
+tol = 1e-4
 
-my_bfgs.bfgs(x0, f, fp, tol, max_its, root)
+solver = solver.Solver(x0, max_its, tol)
+comparisons.compare(solver, sphere, sphere_grad, sphere_hessian)
+
+root = np.array([0, 0, 0]).T
+

@@ -24,7 +24,7 @@ class Solver:
         output += "Time Taken: {}\n".format(self.time_taken)
         return output
 
-    def error_pair_plot(self, root):
+    def error_pair_vectors(self, root):
         xs = self.trace
         n = len(xs)
         ys = []
@@ -38,11 +38,13 @@ class Solver:
         plot_x = np.arange(n - 1) + 1
         plot_y = np.array(ys)
 
-        plt.figure(1)
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
-        plt.xlabel(r'$\log e_k$', fontsize=14)
-        plt.ylabel(r'$\log e_{k+1}$', fontsize=14)
-        plt.grid(True)
-        plt.title(r'Log Error Plot', fontsize=16)
-        plt.plot(plot_x, plot_y, 'ro')
+        return plot_x, plot_y
+
+        #plt.figure(1)
+        #plt.rc('text', usetex=True)
+        #plt.rc('font', family='serif')
+        #plt.xlabel(r'$\log e_k$', fontsize=14)
+        #plt.ylabel(r'$\log e_{k+1}$', fontsize=14)
+        #plt.grid(True)
+        #plt.title(r'Log Error Plot', fontsize=16)
+        #plt.plot(plot_x, plot_y, 'ro')
