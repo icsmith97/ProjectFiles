@@ -1,6 +1,6 @@
 import numpy as np                      # Contains functions for linear algebra and numerical computation.
 import time                             # Contains functions for timing code.
-import solver
+from Solvers import solver
 
 
 class BFGSSolver(solver.Solver):

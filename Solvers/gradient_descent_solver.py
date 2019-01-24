@@ -1,5 +1,5 @@
 import numpy as np                      # Contains functions for linear algebra and numerical computation.
-import solver
+from Solvers import solver
 import time
 
 
