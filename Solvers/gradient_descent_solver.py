@@ -4,23 +4,35 @@ import time
 
 
 class GradientDescentSolver(solver.Solver):
-    def solve(self, grad_f, hessian_f, gamma):
-        xk = self.x0
-        k = 0
+    def solve(self, grad_f, hessian_f, gamma, **kwargs):
+        should_time = kwargs.get('Time', False)
+        repetitions = 1
 
-        grad_f_norm = np.linalg.norm(grad_f(xk))
+        if (should_time):
+            repetitions = 1000
+            start = time.time()
 
-        xs = [xk]
+        for i in range(repetitions):
 
-        start_time = time.time()
 
-        while (grad_f_norm > self.tol) and (k < self.maxIts):
-            xkp1 = xk - gamma * (hessian_f(xk).transpose() @ grad_f(xk))
-            xk = xkp1
+            n = len(self.x0)  # use the starting value to determine the dimension of the problem
+            xk = self.x0
+            k = 0
+
             grad_f_norm = np.linalg.norm(grad_f(xk))
-            k += 1
-            xs.append(xk)
+            xs = [xk]
+
+            start_time = time.time()
+
+            while (grad_f_norm > self.tol) and (k < self.maxIts):
+                xkp1 = xk - gamma * grad_f(xk)
+                xk = xkp1
+                grad_f_norm = np.linalg.norm(grad_f(xk))
+                k += 1
+                xs.append(xk)
 
         self.trace = xs
         self.its = k
-        self.time_taken = time.time() - start_time
+
+        if (should_time):
+            self.time_taken = time.time() - start

@@ -14,6 +14,7 @@ class NewtonSolver(solver.Solver):
 
         for i in range(repetitions):
 
+            n = len(self.x0)  # use the starting value to determine the dimension of the problem
             xk = self.x0
             k = 0
 
@@ -29,9 +30,8 @@ class NewtonSolver(solver.Solver):
                 xs.append(xk)
                 k += 1
 
-            self.trace = xs
-            self.its = k
-
+        self.trace = xs
+        self.its = k
 
         if (should_time):
             self.time_taken = time.time() - start

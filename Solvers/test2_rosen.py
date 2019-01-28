@@ -24,12 +24,13 @@ def rosenbrock_grad_f(x):
 def rosenbrock_hess_f(x):
     return rosen_hess(x)
 
+x0 = np.asarray([2, 2])
 
-x0 = np.array([2, 2]).T
-tol = 1e-6
+tol = 1e-2
 max_its = 100000
+gamma = 1e-3
 
 solver = solver.Solver(x0, max_its, tol)
-comparisons.compare(solver, rosenbrock_f, rosenbrock_grad_f, rosenbrock_hess_f)
+comparisons.compare(solver, rosenbrock_f, rosenbrock_grad_f, rosenbrock_hess_f, gamma)
 
-root = np.array([1, 1]).T
+root = np.array([1, 1])

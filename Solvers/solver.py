@@ -5,7 +5,6 @@ from matplotlib import rc               # Allows access to the LaTeX interpreter
 rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 rc('text', usetex=True)
 
-
 np.set_printoptions(5)
 
 # Finite Difference Approximation?

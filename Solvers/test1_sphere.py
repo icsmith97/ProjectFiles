@@ -23,12 +23,13 @@ def sphere_hessian(x):
     return np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 
 
-x0 = np.array([2, 2, 2]).T
+x0 = np.array([2, -1, 3])
 max_its = 1000
 tol = 1e-4
+gamma = 1e-2
 
 solver = solver.Solver(x0, max_its, tol)
-comparisons.compare(solver, sphere, sphere_grad, sphere_hessian)
+comparisons.compare(solver, sphere, sphere_grad, sphere_hessian, gamma)
 
-root = np.array([0, 0, 0]).T
+root = np.array([0, 0, 0])
 
