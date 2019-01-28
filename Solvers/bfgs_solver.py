@@ -4,69 +4,81 @@ from Solvers import solver
 
 
 class BFGSSolver(solver.Solver):
-    def solve(self, f, grad_f):
+    def solve(self, f, grad_f, **kwargs):
 
-        n = len(self.x0)  # use the starting value to determine the dimension of the problem
-        xk = self.x0
-        hessian_k = np.eye(n)
-        grad_norm = np.linalg.norm(grad_f(xk))
-        k = 0
-        xs = [xk]
-        start_time = time.time()
+        should_time = kwargs.get('Time', False)
+        repetitions = 1
 
-        while grad_norm > self.tol:
-            grad_fk = grad_f(xk)
-            pk = - hessian_k @ grad_fk
+        if (should_time):
+            repetitions = 1000
+            start = time.time()
 
-            ak = self.backtracking_line_search(f, grad_fk, pk, xk)
+        for i in range(repetitions):
 
-            xkp1 = xk + ak * pk
+            n = len(self.x0)  # use the starting value to determine the dimension of the problem
+            xk = self.x0
+            xk = xk.reshape(n, 1)
+            hessian_k = np.eye(n)
+            grad_norm = np.linalg.norm(grad_f(xk))
+            k = 0
+            xs = [xk]
 
-            sk = xkp1 - xk
+            while grad_norm > self.tol:
+                grad_fk = grad_f(xk)
+                pk = - hessian_k @ grad_fk
 
-            grad_fkp1 = grad_f(xkp1)
+                ak = self.backtracking_line_search(f, grad_fk, pk, xk)
 
-            yk = grad_fkp1 - grad_fk
+                xkp1 = xk + ak * pk
 
-            # Nocedal 8.20 suggests rescaling h0 before performing the first BFGS update
+                sk = xkp1 - xk
 
-            if k == 0:
-                hessian_k = np.inner(yk, sk) / np.inner(yk, yk) * np.eye(n)
+                grad_fkp1 = grad_f(xkp1)
 
-            potential_error = (np.dot(yk.transpose(), sk))
+                yk = grad_fkp1 - grad_fk
 
-            if potential_error > 1e5:
-                rho_k = 1000.0
-            else:
-                rho_k = 1.0 / (np.dot(yk.transpose(), sk))
+                # Nocedal 8.20 suggests rescaling h0 before performing the first BFGS update
 
+                if k == 0:
+                    hessian_k = np.inner(yk, sk) / np.inner(yk, yk) * np.eye(n)
 
-            #try:
-                #rho_k = 1.0 / (np.dot(yk.transpose(), sk))
+                # potential_error = (np.dot(yk.transpose(), sk))
+                #
+                # if potential_error < 1e-6:
+                #     rho_k = 1000.0
+                # else:
+                #     rho_k = 1.0 / (np.dot(yk.transpose(), sk))
 
-                #if rho_k > 1e10:
-                    #raise ValueError
-            #except ZeroDivisionError:
-               # rho_k = 1000.0
-           # except ValueError:
-                #rho_k = 1000.0
+                try:
+                    rho_k = 1.0 / (np.dot(yk.transpose(), sk))
 
-            hessian_k = self.bfgs_update(hessian_k, rho_k, sk, yk, n)
+                    if rho_k > 1e10:
+                        raise ValueError
+                except:
+                    rho_k = 1000.0
+                # except ZeroDivisionError:
+                #     rho_k = 1000.0
+                # except ValueError:
+                #     rho_k = 1000.0
+                #
+                hessian_k = self.bfgs_update(hessian_k, rho_k, sk, yk, n)
 
-            # prepare for the next iteration
+                # prepare for the next iteration
 
-            xk = xkp1
-            xs.append(xk)
-            grad_fk = grad_fkp1
-            grad_norm = np.linalg.norm(grad_fk)
-            k += 1
+                xk = xkp1
+                xs.append(xk.T)
+                grad_fk = grad_fkp1
+                grad_norm = np.linalg.norm(grad_fk)
+                k += 1
 
-        # We return the approximated root, the time taken to find it, and the number of
-        # iterations taken to find it
+            # We return the approximated root, the time taken to find it, and the number of
+            # iterations taken to find it
 
-        self.trace = xs
-        self.its = k
-        self.time_taken = time.time() - start_time
+            self.trace = xs
+            self.its = k
+
+        if (should_time):
+            self.time_taken = time.time() - start
 
     @staticmethod
     def backtracking_line_search(f, grad_fk, pk, xk):
@@ -83,9 +95,9 @@ class BFGSSolver(solver.Solver):
 
     @staticmethod
     def bfgs_update(hessian_k, rho_k, sk, yk, n):
-        rsy = (rho_k * sk) @ np.transpose(yk)
-        rys = (rho_k * yk) @ np.transpose(sk)
-        rss = (rho_k * sk) @ np.transpose(sk)
+        rsy = (rho_k * sk) @ yk.T
+        rys = (rho_k * yk) @ sk.T
+        rss = (rho_k * sk) @ sk.T
 
         hkp1 = (np.eye(n) - rsy) @ hessian_k @ (np.eye(n) - rys) + rss
 

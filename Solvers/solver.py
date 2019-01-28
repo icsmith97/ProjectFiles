@@ -6,6 +6,8 @@ rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 rc('text', usetex=True)
 
 
+np.set_printoptions(5)
+
 # Finite Difference Approximation?
 
 class Solver:
@@ -16,12 +18,13 @@ class Solver:
         self.its = 0
         self.time_taken = 0
         self.trace = []
+        self.n = len(initial_guess)
 
     def __str__(self):
         output = "Initial Guess: {}\n".format(self.x0)
-        output += "Approximated Root: {}\n".format(self.trace[-1])
+        output += "Approximated Root: {}\n".format(((self.trace[-1]).reshape(1, self.n)))
         output += "Iterations Taken: {}\n".format(self.its)
-        output += "Time Taken: {}\n".format(self.time_taken)
+        output += "Time Taken: {:.5f}\n".format(self.time_taken)
         return output
 
     def error_pair_vectors(self, root):

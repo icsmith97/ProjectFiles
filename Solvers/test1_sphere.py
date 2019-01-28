@@ -16,14 +16,14 @@ def sphere(x):
 
 
 def sphere_grad(x):
-    return np.array([2 * x[0], 2 * x[1], 2 * x[2]]).T
+    return np.array([2 * x[0], 2 * x[1], 2 * x[2]])
 
 
 def sphere_hessian(x):
     return np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 
 
-x0 = np.array([43, 12, 105]).T
+x0 = np.array([2, 2, 2]).T
 max_its = 1000
 tol = 1e-4
 

@@ -11,9 +11,9 @@ def compare(solver, test_f, test_grad_f, test_hessian_f):
     print(solver_gd)
 
     solver_nm = newton_solver.NewtonSolver(solver.x0, solver.maxIts, solver.tol)
-    solver_nm.solve(test_grad_f, test_hessian_f)
+    solver_nm.solve(test_grad_f, test_hessian_f, Time=True)
     print(solver_nm)
 
     solver_bfgs = bfgs_solver.BFGSSolver(solver.x0, solver.maxIts, solver.tol)
-    solver_bfgs.solve(test_f, test_grad_f)
+    solver_bfgs.solve(test_f, test_grad_f, Time=True)
     print(solver_bfgs)
