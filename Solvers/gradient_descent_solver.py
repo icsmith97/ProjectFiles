@@ -4,7 +4,7 @@ import time
 
 
 class GradientDescentSolver(solver.Solver):
-    def solve(self, grad_f, hessian_f, gamma, **kwargs):
+    def solve(self, grad_f, gamma, **kwargs):
         should_time = kwargs.get('Time', False)
         repetitions = 1
 

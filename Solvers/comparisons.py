@@ -5,7 +5,7 @@ import numpy as np
 
 def compare(solver, test_f, test_grad_f, test_hessian_f, gamma):
     solver_gd = gradient_descent_solver.GradientDescentSolver(solver.x0, solver.maxIts, solver.tol)
-    solver_gd.solve(test_grad_f, test_hessian_f, gamma, Time=False)
+    solver_gd.solve(test_grad_f, gamma, Time=False)
     print(solver_gd)
 
     solver_nm = newton_solver.NewtonSolver(solver.x0, solver.maxIts, solver.tol)
