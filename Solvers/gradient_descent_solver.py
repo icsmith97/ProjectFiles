@@ -4,28 +4,28 @@ import time
 
 
 class GradientDescentSolver(solver.Solver):
-    def solve(self, grad_f, gamma, **kwargs):
+    def solve(self, f, grad_f, **kwargs):
         should_time = kwargs.get('Time', False)
         repetitions = 1
 
-        if (should_time):
+        if should_time:
             repetitions = 1000
             start = time.time()
 
         for i in range(repetitions):
 
-
-            n = len(self.x0)  # use the starting value to determine the dimension of the problem
+            n = len(self.x0)
             xk = self.x0
             k = 0
 
             grad_f_norm = np.linalg.norm(grad_f(xk))
             xs = [xk]
 
-            start_time = time.time()
-
             while (grad_f_norm > self.tol) and (k < self.maxIts):
-                xkp1 = xk - gamma * grad_f(xk)
+                grad_fk = grad_f(xk)
+                pk = - grad_fk
+                alpha = self.backtracking_line_search(f, grad_fk, pk, xk)
+                xkp1 = xk + alpha * pk
                 xk = xkp1
                 grad_f_norm = np.linalg.norm(grad_f(xk))
                 k += 1
@@ -34,5 +34,18 @@ class GradientDescentSolver(solver.Solver):
         self.trace = xs
         self.its = k
 
-        if (should_time):
+        if should_time:
             self.time_taken = time.time() - start
+
+    @staticmethod
+    def backtracking_line_search(f, grad_fk, pk, xk):
+        a = 1
+        rho = 0.5
+        c = 0.1
+
+        # Starting with a = 1, then chose values for rho and c in (0,1).
+
+        while f(xk + (a * pk)) > (f(xk) + (c * a) * (grad_fk.transpose() @ pk)):
+            a = rho * a
+
+        return a

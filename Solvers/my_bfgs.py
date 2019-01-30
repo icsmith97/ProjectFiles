@@ -173,7 +173,7 @@ def bfgs(x0, f, fprime, tol, max_its, root, **kwargs):
 
         # BFGS update is performed
         try:
-            rhok = 1.0 / (np.dot(yk.transpose(), sk))
+            rhok = 1.0 / (np.inner(yk, sk))
 
             if rhok > 1e10:
                 raise ValueError

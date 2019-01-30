@@ -42,25 +42,13 @@ class BFGSSolver(solver.Solver):
                 if k == 0:
                     hessian_k = np.inner(yk, sk) / np.inner(yk, yk) * np.eye(n)
 
-                # potential_error = (np.dot(yk.transpose(), sk))
-                #
-                # if potential_error < 1e-6:
-                #     rho_k = 1000.0
-                # else:
-                #     rho_k = 1.0 / (np.dot(yk.transpose(), sk))
+                divisor = np.dot(yk.T, sk)
 
-                try:
-                    rho_k = 1.0 / (np.dot(yk.transpose(), sk))
-
-                    if rho_k > 1e10:
-                        raise ValueError
-                except:
+                if (divisor > 1e5):
                     rho_k = 1000.0
-                # except ZeroDivisionError:
-                #     rho_k = 1000.0
-                # except ValueError:
-                #     rho_k = 1000.0
-                #
+                else:
+                    rho_k = 1.0 / divisor
+
                 hessian_k = self.bfgs_update(hessian_k, rho_k, sk, yk, n)
 
                 # prepare for the next iteration

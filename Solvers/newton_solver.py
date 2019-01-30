@@ -23,11 +23,11 @@ class NewtonSolver(solver.Solver):
             xs = [xk]
 
             while (grad_f_norm > self.tol) and (k < self.maxIts):
-                xkp1 = xk - np.linalg.solve(hessian_f(xk), grad_f(xk))
+                if len(xk) > 1:
+                    xkp1 = xk - np.linalg.solve(hessian_f(xk), grad_f(xk))
                 xk = xkp1
                 xs.append(xk)
                 grad_f_norm = np.linalg.norm(grad_f(xk))
-                xs.append(xk)
                 k += 1
 
         self.trace = xs
